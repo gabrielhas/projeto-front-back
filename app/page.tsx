@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 import {
   AlertDialog,
@@ -41,9 +42,10 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { deleteTask } from "@/actions/delete-task-from-db";
+import { updateTaskStatus } from "@/actions/toggle-done";
 
 export default function Home() {
-  const [tastList, setTaskList] = useState<Tasks[]>([]);
+  const [taskList, setTaskList] = useState<Tasks[]>([]);
   const [task, setTask] = useState<string>("");
 
   const handledGetTasks = async () => {
@@ -58,15 +60,24 @@ export default function Home() {
   };
 
   const handleAddTask = async () => {
-    if (!task || task.trim().length === 0) return;
+    if (!task || task.trim().length === 0) {
+      toast.error("Digite uma tarefa", {
+        position: "top-center",
+      });
+      return;
+    }
 
     try {
       const newTask = await NewTask(task);
 
       if (!newTask) return;
 
-      setTaskList([...tastList, newTask]);
-      setTask(""); // Clear input state
+      setTaskList([...taskList, newTask]);
+      setTask("");
+      toast.success("Tarefa adicionada com sucesso!", {
+        position: "top-center",
+      });
+      await handledGetTasks();
     } catch (error) {
       throw error;
     }
@@ -79,8 +90,43 @@ export default function Home() {
       const deletedTask = await deleteTask(taskId);
 
       if (!deletedTask) return;
-      handledGetTasks();
+      toast.info("Tarefa excluída com sucesso!", {
+        position: "top-center",
+      });
+      await handledGetTasks();
     } catch (error) {
+      throw error;
+    }
+  };
+
+  const handToggleTask = async (taskId: number) => {
+    const previousTask = [...taskList];
+
+    try {
+      setTaskList((prevTask) => {
+        const updatedTaskList = prevTask.map((task) => {
+          if (task.id === taskId) {
+            return {
+              ...task,
+              done: !task.done,
+            };
+          }
+          return task;
+        });
+
+        return updatedTaskList;
+      });
+
+      const updatedTask = await updateTaskStatus(taskId);
+
+      if (!updatedTask) return;
+
+      toast.success("Tarefa atualizada com sucesso!", {
+        position: "top-center",
+      });
+      await handledGetTasks();
+    } catch (error) {
+      setTaskList(previousTask);
       throw error;
     }
   };
@@ -136,16 +182,23 @@ export default function Home() {
           </div>
 
           <div className="mt-3 border-b">
-            {tastList.map((task) => (
+            {taskList.map((task) => (
               <div
                 className="flex justify-between items-center h-14 border-t"
                 key={task.id}
               >
-                <div className="w-1 h-full bg-green-400"></div>
-                <p className="flex-1 px-2">{task.task}</p>
+                <div
+                  className={`${task.done ? "w-1 h-full bg-green-700" : "w-1 h-full bg-red-400"}`}
+                ></div>
+                <p
+                  className="flex-1 px-2 text-sm cursor-pointer hover:text-gray-600"
+                  onClick={() => handToggleTask(task.id)}
+                >
+                  {task.task}
+                </p>
 
                 <div className="flex items-center gap-2">
-                  <EditTask />
+                  <EditTask task={task} handledGetTasks={handledGetTasks} />
 
                   <Dialog>
                     <DialogTrigger>
