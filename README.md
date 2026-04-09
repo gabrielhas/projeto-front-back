@@ -123,10 +123,10 @@ Durante o desenvolvimento deste projeto, foram aplicados e aprimorados conhecime
 
 ```bash
 # Clone o repositório
-git clone https://github.com/gabrielhas/Projeto-Pessoal---To-do-List
+git clone https://github.com/gabrielhas/projeto_to-do-list
 
 # Acesse a pasta
-cd Projeto-Pessoal---To-do-List
+cd projeto_to-do-list
 
 # Instale as dependências
 npm install
