@@ -8,7 +8,6 @@ O projeto permite ao usuário organizar suas atividades de forma simples e efici
 
 ## 🚀 Demonstração
 
-🔗 Aplicação online: 
 📂 Repositório: https://github.com/gabrielhas/projeto_to-do-list
 
 ---
