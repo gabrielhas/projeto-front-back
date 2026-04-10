@@ -157,4 +157,6 @@ A partir disso, foram implementadas adaptações e melhorias, incluindo:
 
 Este projeto foi desenvolvido com o objetivo de consolidar conhecimentos em desenvolvimento FullStack utilizando tecnologias modernas do ecossistema JavaScript/TypeScript.
 
+LinkedIn: https://www.linkedin.com/in/gabrielhalvess/
+
 Fique à vontade para contribuir, sugerir melhorias ou utilizar como base para novos projetos.
